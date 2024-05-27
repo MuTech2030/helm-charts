@@ -1,0 +1,43 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ecommda-frontend-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - "ecommdanae.ae"  # The actual domain where the service is exposed
+      secretName: "ecommdanae-tls"  # Kubernetes secret containing the TLS cert and key
+  rules:
+    - host: "ecommdaprodnae.ae"
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: ecomm-mda-main-service
+                port:
+                  number: 80
+
+    - host: "ecommdaprodnae.ae"
+      http:
+        paths:
+          - path: "/api"
+            pathType: Prefix
+            backend:
+              service:
+                name: ecomm-mda-api-service
+                port:
+                  number: 80
+          - path: "/admin"
+            pathType: Prefix
+            backend:
+              service:
+                name: ecomm-mda-admin-service
+                port:
+                  number: 80

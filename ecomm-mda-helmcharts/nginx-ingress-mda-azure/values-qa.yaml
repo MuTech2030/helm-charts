@@ -1,0 +1,33 @@
+ingress-nginx:
+  controller:
+    # Replica count ensures high availability of the ingress controller.
+    replicaCount: 3
+
+    # Using LoadBalancer service type for exposing NGINX ingress on external IP.
+    service:
+      type: LoadBalancer
+      annotations:
+        service.beta.kubernetes.io/azure-load-balancer-resource-group: "myResourceGroup"
+
+    # Enabling metrics for Prometheus scraping.
+    metrics:
+      enabled: true
+      service:
+        annotations:
+          prometheus.io/scrape: "true"
+          prometheus.io/port: "10254"
+
+    # SSL redirect configuration.
+    ssl:
+      redirect: true
+
+    # HSTS security enhancements.
+    config:
+      hsts: "true"
+      hsts-include-subdomains: "true"
+      hsts-max-age: "31536000"
+      use-proxy-protocol: "true"
+
+  # Disable default backend; assume external default backend is used.
+  defaultBackend:
+    enabled: false

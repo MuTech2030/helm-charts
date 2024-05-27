@@ -1,0 +1,24 @@
+ingress-nginx:
+  controller:
+    replicaCount: 3
+    service:
+      type: LoadBalancer
+      annotations:
+        service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+        service.beta.kubernetes.io/azure-load-balancer-internal-subnet: "ecommdanaeprod"
+        service.beta.kubernetes.io/azure-load-balancer-internal-ip-address: "10.0.0.100"
+        service.beta.kubernetes.io/azure-load-balancer-resource-group: "ecommdanaestgrg"
+        nginx.ingress.kubernetes.io/rewrite-target: /$2
+        nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # Enabling metrics for Prometheus scraping.
+    metrics:
+      enabled: true
+      service:
+        annotations:
+          prometheus.io/scrape: "true"
+          prometheus.io/port: "10254"
+
+
+  # Disable default backend; assume external default backend is used.
+  defaultBackend:
+    enabled: false
